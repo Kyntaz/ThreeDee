@@ -157,10 +157,10 @@
     <ClCompile Include="ThreeDee.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="scene.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="nff1.bin" />
+	<ClInclude Include="scene.h" />
+    <ClInclude Include="colors.h" />
+    <ClInclude Include="primitives.h" />
+    <ClInclude Include="ray.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
