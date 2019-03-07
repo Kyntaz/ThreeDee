@@ -20,6 +20,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+	<ClInclude Include="scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="colors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
