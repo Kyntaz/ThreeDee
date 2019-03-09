@@ -7,13 +7,9 @@ typedef struct _collision Collision;
 
 class Primitive {
 public:
-	float posx;
-	float posy;
-	float posz;
-	Primitive(float x, float y, float z) {
-		posx = x;
-		posy = y;
-		posz = z;
+	Vector3 pos;
+	Primitive(Vector3 pos) {
+		pos = pos;
 	}
 	virtual Collision intersect(Ray ray) = 0;
 };
@@ -22,8 +18,8 @@ class Sphere : public Primitive {
 public:
 	float radius;
 
-	Sphere(float x, float y, float z, float r) : Primitive(x, y, z), radius(r) {
-		std::cout << "Created a sphere at: " << x << ", " << y << ", " << z << ";" << std::endl << "with radius: " << r << std::endl;
+	Sphere(Vector3 pos, float r) : Primitive(pos), radius(r) {
+		std::cout << "Created a sphere at: " << pos.x << ", " << pos.y << ", " << pos.z << ";" << std::endl << "with radius: " << r << std::endl;
 	}
 
 	Collision intersect(Ray ray) {
