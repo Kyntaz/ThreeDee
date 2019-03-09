@@ -39,6 +39,7 @@ public:
 				tokens.push_back(command);
 			}
 			command = tokens[0];
+			std::cout << command << std::endl;
 			//SPHERE
 			if (command == "s") {
 				Vector3 sPos = { std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3])};
@@ -114,6 +115,7 @@ public:
 			}
 			//BACKGROUND
 			else if (command == "b") {
+				std::cout << "Creating background color" << std::endl;
 				_color *background = new _color();
 				background->r = std::stof(tokens[1]);
 				background->g = std::stof(tokens[2]);
@@ -122,6 +124,7 @@ public:
 			//POSITIONAL LIGHT
 			else if (command == "l") {
 				tokens.clear();
+				std::cout << "Creating positional light" << std::endl;
 				//pos
 				std::getline(inputFileStream, line);
 				std::istringstream lineStream(line);
@@ -132,8 +135,6 @@ public:
 				Vector3 RGB = { 255, 255, 255 };
 				if (tokens.size() == 7) {
 					float r, g, b;
-					tokens[4].erase(0,1);
-					tokens[6].erase(tokens[6].end()-2,tokens[6].end());
 					r = std::stof(tokens[4]);
 					g = std::stof(tokens[5]);
 					b = std::stof(tokens[6]);
@@ -144,6 +145,7 @@ public:
 			}
 			//FILL COLOR AND SHADING PARAMS
 			else if (command == "f") {
+				std::cout << "Setting fill color:" << std::endl;
 				Vector3 rgb  = { std::stof(tokens[1]), std::stof(tokens[2]), std::stof(tokens[3]) };
 				float kd, ks, shine, transm, idxRefr;
 				kd = std::stof(tokens[4]);
@@ -151,6 +153,94 @@ public:
 				shine = std::stof(tokens[6]);
 				transm = std::stof(tokens[7]);
 				idxRefr = std::stof(tokens[8]);
+				std::cout << "RGB: ";
+				printVector(rgb);
+				std::cout << "Kd: " << kd << "; Ks: " << ks;
+				std::cout << "Shine:" << shine << "; Transm: " << transm << "; idx Refracation:" << idxRefr;
+				//TODO add fill color
+			}
+			else if (command == "c") {
+				
+				//BASE
+				std::cout << "Creating cone/cilinder" << std::endl;
+				std::getline(inputFileStream, line);
+				std::istringstream lineStream(line);
+				while (std::getline(lineStream, command, ' ')) {
+					tokens.push_back(command);
+				}
+				
+				Vector3 base = { std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]) };
+				std::cout << "Base: ";
+				printVector(base);
+				tokens.clear();
+
+				//apex
+				std::getline(inputFileStream, line);
+				lineStream.str(line); 
+				lineStream.clear();
+				while (std::getline(lineStream, command, ' ')) {
+					tokens.push_back(command);
+				}
+				Vector3 apex = { std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]) };
+				std::cout << "Apex: ";
+				printVector(apex);
+				//TODO create cone/cilinder
+				tokens.clear();
+			}
+			else if (command == "pl") {
+				std::cout << "Creating plane:" << std::endl;
+				Vector3 p1 = { std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]) };
+				Vector3 p2 = { std::stof(tokens[4]),std::stof(tokens[5]),std::stof(tokens[6]) };
+				Vector3 p3 = { std::stof(tokens[7]),std::stof(tokens[8]),std::stof(tokens[9]) };
+				//TODO create plan
+				std::cout << "Point 1 : ";
+				printVector(p1);
+				std::cout << "Point 2 : ";
+				printVector(p2);
+				std::cout << "Point 3 : ";
+				printVector(p3);
+				tokens.clear();
+			}
+			else if (command == "p") {
+			std::cout << "Creating Poligon: " << std::endl;
+			int tVertices = std::stoi(tokens[1]);
+			std::cout <<tVertices <<" vertices" << std::endl;
+			tokens.clear();
+			for (int i = 0; i < tVertices; i++) {
+				std::getline(inputFileStream, line);
+				std::istringstream lineStream(line);
+				while (std::getline(lineStream, command, ' ')) {
+					tokens.push_back(command);
+				}
+				std::cout << "Vertice "<<i<<": ";
+				Vector3 vert = { std::stof(tokens[0]),std::stof(tokens[1]),std::stof(tokens[2]) };
+				printVector(vert);
+				//TODO Create Vertices?!?
+				tokens.clear();
+			}
+			//TODO Create Poligon
+			}
+			else if (command == "pp") {
+				std::cout << "Creating Poligon Patch: " << std::endl;
+				int tVertices = std::stoi(tokens[1]);
+				std::cout << tVertices << " vertices" << std::endl;
+				tokens.clear();
+				for (int i = 0; i < tVertices; i++) {
+					std::getline(inputFileStream, line);
+					std::istringstream lineStream(line);
+					while (std::getline(lineStream, command, ' ')) {
+						tokens.push_back(command);
+					}
+					std::cout << "Vertice " << i << ": ";
+					Vector3 vert = { std::stof(tokens[0]),std::stof(tokens[1]),std::stof(tokens[2]) };
+					printVector(vert);
+					std::cout << "Norm " << i << ": ";
+					Vector3 norm = { std::stof(tokens[3]),std::stof(tokens[4]),std::stof(tokens[5]) };
+					printVector(norm);
+					//TODO Create Vertices and norm objects?!?
+					tokens.clear();
+				}
+				//TODO Create Poligonal patch
 			}
 		}
 
