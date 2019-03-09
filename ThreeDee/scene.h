@@ -8,13 +8,16 @@
 #include "primitives.h"
 #include "colors.h"
 #include "vector3.h"
+#include "camera.h"
 class Scene
 {
-
+	Camera* camera;
 public:
 
 	Scene() {}
-
+	Camera* GetCamera() {
+		return camera;
+	}
 	bool load_nff(const char* filename) {
 
 		std::ifstream inputFileStream(filename);
@@ -71,9 +74,9 @@ public:
 
 				//RES
 				tokens = getTokensFromLine(inputFileStream);
-				float resx = stof(tokens[1]);
-				float resy = stof(tokens[2]);
-
+				int resx = stoi(tokens[1]);
+				int resy = stoi(tokens[2]);
+				camera = new Camera(from, at, up, angle, hither, resx, resy);
 				std::cout << "Viewport:" << std::endl;
 				std::cout << "from: " << from.x << ", " << from.y << ", " << from.z << ", " << std::endl;
 				std::cout << "at: " << at.x << ", " << at.x << ", " << at.z << ", " << std::endl;
