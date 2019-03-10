@@ -9,9 +9,14 @@
 #include "colors.h"
 #include "vector3.h"
 #include "camera.h"
+#include "positionallight.h"
+
 class Scene
 {
 	Camera* camera;
+	std::vector<Primitive*> primitives;
+	std::vector<PositionalLight*> lights;
+	Color* background = new Color({ 0,0,0 });
 public:
 
 	Scene() {}
@@ -19,7 +24,7 @@ public:
 		return camera;
 	}
 	bool load_nff(const char* filename) {
-
+		float kd, ks, shine, transm, idxRefr;
 		std::ifstream inputFileStream(filename);
 		/*
 		Possible regex re implementation
@@ -34,6 +39,9 @@ public:
 		std::string line;
 		std::string command;
 		std::vector<std::string> tokens = getTokensFromLine(inputFileStream);
+
+		
+
 		while (tokens.size() != 0) {
 
 
@@ -43,9 +51,9 @@ public:
 			//SPHERE
 			if (command == "s") {
 				Vector3 sPos = { std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]) };
-				Sphere* sphere = new Sphere(sPos,
-					std::stof(tokens[4]));
-				tokens.clear();
+				Sphere* sphere = new Sphere(sPos, std::stof(tokens[4]));
+				std::cout << "Creating sphere at: " << sPos.x << ", " << sPos.y << ", " << sPos.z << ";" << std::endl << "with radius: " << tokens[4] << std::endl;
+				primitives.push_back(sphere);
 			}
 			//VIEWPORT
 			else if (command == "v") {
@@ -88,7 +96,7 @@ public:
 			//BACKGROUND
 			else if (command == "b") {
 				std::cout << "Creating background color" << std::endl;
-				_color *background = new _color();
+				background = new Color();
 				background->r = std::stof(tokens[1]);
 				background->g = std::stof(tokens[2]);
 				background->b = std::stof(tokens[3]);
@@ -99,7 +107,7 @@ public:
 				//pos
 				Vector3 lPos = { std::stof(tokens[1]), std::stof(tokens[2]), std::stof(tokens[3]) };
 				//rgb
-				Vector3 RGB = { 255, 255, 255 };
+				Color RGB = { 1, 1, 1 };
 
 				if (tokens.size() == 7) {//if rgb defined
 					float r, g, b;
@@ -108,15 +116,14 @@ public:
 					b = std::stof(tokens[6]);
 					RGB = { r, g, b };
 				}
-
+				lights.push_back(new PositionalLight({ lPos, RGB }));
 				std::cout << "light position: " << lPos.x << ", " << lPos.y << ", " << lPos.z << std::endl;
-				std::cout << "light rgb: " << RGB.x << ", " << RGB.y << ", " << RGB.z << std::endl;
+				std::cout << "light rgb: " << RGB.r << ", " << RGB.g << ", " << RGB.b << std::endl;
 			}
 			//FILL COLOR AND SHADING PARAMS
 			else if (command == "f") {
 				std::cout << "Setting fill color:" << std::endl;
 				Vector3 rgb = { std::stof(tokens[1]), std::stof(tokens[2]), std::stof(tokens[3]) };
-				float kd, ks, shine, transm, idxRefr;
 				kd = std::stof(tokens[4]);
 				ks = std::stof(tokens[5]);
 				shine = std::stof(tokens[6]);

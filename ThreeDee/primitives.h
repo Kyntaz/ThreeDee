@@ -12,6 +12,8 @@ public:
 		pos = pos;
 	}
 	virtual Collision intersect(Ray ray) = 0;
+	Color color;
+	float kd, ks, shine, transm, idxRefr;
 };
 
 class Sphere : public Primitive {
@@ -19,7 +21,7 @@ public:
 	float radius;
 
 	Sphere(Vector3 pos, float r) : Primitive(pos), radius(r) {
-		std::cout << "Created a sphere at: " << pos.x << ", " << pos.y << ", " << pos.z << ";" << std::endl << "with radius: " << r << std::endl;
+		
 	}
 
 	Collision intersect(Ray ray) {
