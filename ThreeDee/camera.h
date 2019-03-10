@@ -6,7 +6,7 @@ class Camera
 	
 public:
 	Camera(Vector3 from, Vector3 at, Vector3 up, float angle, float hither, int resX, int resY) :
-		eye(from), at(at), up(up), angle(angle), near(hither), resX(resX), resY(resY) {}
+		eye(from), at(at), up(up), angle(angle), nearC(hither), resX(resX), resY(resY) {}
 	int GetResX() {
 		return resX;
 	}
@@ -16,6 +16,6 @@ public:
 
 private:
 	Vector3 eye, at, up;
-	float angle, near;
+	float angle, nearC;
 	int resX, resY;
 };
