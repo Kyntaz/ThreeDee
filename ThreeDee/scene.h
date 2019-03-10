@@ -37,12 +37,11 @@ public:
 		}*/
 
 		//Material Properties
-		MaterialProperties* matProperties;
-		Color color;
-		float kd, ks, shine, transm, idxRefr;
+		MaterialProperties* matProperties = new MaterialProperties({ { 0, 0, 0 },0 ,0 ,0 ,0 ,0 });
+
 		//NFF File
 		std::ifstream inputFileStream(filename);
-		
+
 
 		std::vector<std::string> tokens = getTokensFromLine(inputFileStream);
 
@@ -88,15 +87,15 @@ public:
 				std::cout << "up: " << up.x << ", " << up.y << ", " << up.z << ", " << std::endl;
 				std::cout << "angle: " << angle << std::endl;
 				std::cout << "hither: " << hither << std::endl;
-				std::cout << "res: " << resx << ", " << resy << std::endl;
+				std::cout << "res: " << resx << ", " << resy << std::endl << std::endl;
 			}
 			//BACKGROUND
 			else if (command == "b") {
-				std::cout << "Creating background color" << std::endl;
 				background = new Color();
 				background->r = std::stof(tokens[1]);
 				background->g = std::stof(tokens[2]);
 				background->b = std::stof(tokens[3]);
+				std::cout << "Creating background color: " << tokens[1] << "; " << tokens[2] << "; " << tokens[3] << std::endl << std::endl;
 			}
 			//POSITIONAL LIGHT
 			else if (command == "l") {
@@ -115,11 +114,13 @@ public:
 				}
 				lights.push_back(new PositionalLight({ lPos, RGB }));
 				std::cout << "light position: " << lPos.x << ", " << lPos.y << ", " << lPos.z << std::endl;
-				std::cout << "light rgb: " << RGB.r << ", " << RGB.g << ", " << RGB.b << std::endl;
+				std::cout << "light rgb: " << RGB.r << ", " << RGB.g << ", " << RGB.b << std::endl << std::endl;
 			}
 			//FILL COLOR AND SHADING PARAMS
 			else if (command == "f") {
 				std::cout << "Setting fill color:" << std::endl;
+				Color color;
+				float kd, ks, shine, transm, idxRefr;
 				color = { std::stof(tokens[1]), std::stof(tokens[2]), std::stof(tokens[3]) };
 				kd = std::stof(tokens[4]);
 				ks = std::stof(tokens[5]);
@@ -127,66 +128,75 @@ public:
 				transm = std::stof(tokens[7]);
 				idxRefr = std::stof(tokens[8]);
 				matProperties = new MaterialProperties({ color,kd,ks,shine,transm,idxRefr });
-				std::cout << "RGB: "<< color.r <<"; "<< color.g << "; " << color.b << std::endl;
+				std::cout << "RGB: " << color.r << "; " << color.g << "; " << color.b << std::endl;
 				std::cout << "Kd: " << kd << "; Ks: " << ks << "; ";
-				std::cout << "Shine:" << shine << "; Transm: " << transm << "; idx Refraction: " << idxRefr;
+				std::cout << "Shine:" << shine << "; Transm: " << transm << "; idx Refraction: " << idxRefr << std::endl << std::endl;
 				//TODO add fill color
 			}
 			//CILINDER/CONE
 			else if (command == "c") {
 
 				//BASE
-				std::cout << "Creating cone/cilinder" << std::endl;
-
 				tokens = getTokensFromLine(inputFileStream);
 				Vector3 base = { std::stof(tokens[0]),std::stof(tokens[1]),std::stof(tokens[2]) };
 				float baseR = std::stof(tokens[3]);
-				std::cout << "Base: "; printVector(base);
-				std::cout << "Radius: " << baseR << std::endl;
-
 				//APEX
 				tokens = getTokensFromLine(inputFileStream);
 				Vector3 apex = { std::stof(tokens[0]),std::stof(tokens[1]),std::stof(tokens[2]) };
 				float apexR = std::stof(tokens[3]);
+
+				Cilinder * cilinder = new Cilinder(base, baseR, apex, apexR, matProperties);
+				primitives.push_back(cilinder);
+				std::cout << "Creating cone/cilinder" << std::endl;
+				std::cout << "Base: "; printVector(base);
+				std::cout << "Radius: " << baseR << std::endl;
 				std::cout << "Apex: "; printVector(apex);
 				std::cout << "Radius: " << apexR << std::endl;
-				//TODO create cone/cilinder
+				printMaterialProperties(*cilinder->_matProps); std::cout << std::endl;
 			}
 			//SPHERE
 			else if (command == "s") {
 				Vector3 sPos = { std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]) };
-				Sphere* sphere = new Sphere(sPos, std::stof(tokens[4]),matProperties);
+				Sphere* sphere = new Sphere(sPos, std::stof(tokens[4]), matProperties);
 				std::cout << "Creating sphere at: " << sPos.x << ", " << sPos.y << ", " << sPos.z << ";" << std::endl << "with radius: " << tokens[4] << std::endl;
 				primitives.push_back(sphere);
+				printMaterialProperties(*sphere->_matProps); std::cout << std::endl;
 			}
 			//POLIGON
 			else if (command == "p") {
 				std::cout << "Creating Poligon: " << std::endl;
 				int tVertices = std::stoi(tokens[1]);
 				std::cout << tVertices << " vertices" << std::endl;
+				std::vector<Vector3> vertices;
 				for (int i = 0; i < tVertices; i++) {
 					tokens = getTokensFromLine(inputFileStream);
 					Vector3 vert = { std::stof(tokens[0]),std::stof(tokens[1]),std::stof(tokens[2]) };
+					vertices.push_back(vert);
 					std::cout << "Vertice " << i + 1 << ": "; printVector(vert);
-					//TODO Create Vertices?!?
 				}
-				//TODO Create Poligon
+				Poligon* poligon = new Poligon(vertices, matProperties);
+				printMaterialProperties(*poligon->_matProps); std::cout << std::endl;
+				primitives.push_back(poligon);
 			}
 			//POLIGONAL PATCH
 			else if (command == "pp") {
 				std::cout << "Creating Poligon Patch: " << std::endl;
 				int tVertices = std::stoi(tokens[1]);
 				std::cout << tVertices << " vertices" << std::endl;
-
+				std::vector<Vector3> vertices;
+				std::vector<Vector3> normals;
 				for (int i = 0; i < tVertices; i++) {
 					tokens = getTokensFromLine(inputFileStream);
 					Vector3 vert = { std::stof(tokens[0]),std::stof(tokens[1]),std::stof(tokens[2]) };
-					Vector3 norm = { std::stof(tokens[3]),std::stof(tokens[4]),std::stof(tokens[5]) };
+					Vector3 normal = { std::stof(tokens[3]),std::stof(tokens[4]),std::stof(tokens[5]) };
+					vertices.push_back(vert);
+					normals.push_back(normal);
 					std::cout << "Vertice " << i + 1 << ": "; printVector(vert);
-					std::cout << "Norm " << i + 1 << ": "; printVector(norm);
-					//TODO Create Vertices and norm objects?!?
+					std::cout << "Normal " << i + 1 << ": "; printVector(normal);
 				}
-				//TODO Create Poligonal patch
+				PoligonalPatch* poligonPatch = new PoligonalPatch(vertices, normals, matProperties);
+				printMaterialProperties(*poligonPatch->_matProps); std::cout << std::endl;
+				primitives.push_back(poligonPatch);
 			}
 			//PLANE
 			else if (command == "pl") {
@@ -198,6 +208,9 @@ public:
 				std::cout << "Point 1 : "; printVector(p1);
 				std::cout << "Point 2 : "; printVector(p2);
 				std::cout << "Point 3 : "; printVector(p3);
+				Plane* plane = new Plane(p1, p2, p3, matProperties);
+				printMaterialProperties(*plane->_matProps); std::cout << std::endl;
+				primitives.push_back(plane);
 
 			}
 			tokens = getTokensFromLine(inputFileStream);
