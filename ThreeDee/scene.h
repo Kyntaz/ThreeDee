@@ -10,6 +10,7 @@
 #include "vector3.h"
 #include "camera.h"
 #include "positionallight.h"
+#include "materialproperties.h"
 
 class Scene
 {
@@ -24,8 +25,6 @@ public:
 		return camera;
 	}
 	bool load_nff(const char* filename) {
-		float kd, ks, shine, transm, idxRefr;
-		std::ifstream inputFileStream(filename);
 		/*
 		Possible regex re implementation
 
@@ -36,27 +35,25 @@ public:
 			std::cout << "Number found: " << m[1] << std::endl; // Get Captured Group 1 text
 			str = m.suffix().str(); // Proceed to the next match
 		}*/
-		std::string line;
-		std::string command;
+
+		//Material Properties
+		MaterialProperties* matProperties;
+		Color color;
+		float kd, ks, shine, transm, idxRefr;
+		//NFF File
+		std::ifstream inputFileStream(filename);
+		
+
 		std::vector<std::string> tokens = getTokensFromLine(inputFileStream);
 
-		
+
 
 		while (tokens.size() != 0) {
 
+			std::string command = tokens[0];
 
-
-			command = tokens[0];
-			std::cout << command << std::endl;
-			//SPHERE
-			if (command == "s") {
-				Vector3 sPos = { std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]) };
-				Sphere* sphere = new Sphere(sPos, std::stof(tokens[4]));
-				std::cout << "Creating sphere at: " << sPos.x << ", " << sPos.y << ", " << sPos.z << ";" << std::endl << "with radius: " << tokens[4] << std::endl;
-				primitives.push_back(sphere);
-			}
 			//VIEWPORT
-			else if (command == "v") {
+			if (command == "v") {
 				tokens = getTokensFromLine(inputFileStream);
 				//FROM
 
@@ -123,18 +120,19 @@ public:
 			//FILL COLOR AND SHADING PARAMS
 			else if (command == "f") {
 				std::cout << "Setting fill color:" << std::endl;
-				Vector3 rgb = { std::stof(tokens[1]), std::stof(tokens[2]), std::stof(tokens[3]) };
+				color = { std::stof(tokens[1]), std::stof(tokens[2]), std::stof(tokens[3]) };
 				kd = std::stof(tokens[4]);
 				ks = std::stof(tokens[5]);
 				shine = std::stof(tokens[6]);
 				transm = std::stof(tokens[7]);
 				idxRefr = std::stof(tokens[8]);
-				std::cout << "RGB: ";
-				printVector(rgb);
+				matProperties = new MaterialProperties({ color,kd,ks,shine,transm,idxRefr });
+				std::cout << "RGB: "<< color.r <<"; "<< color.g << "; " << color.b << std::endl;
 				std::cout << "Kd: " << kd << "; Ks: " << ks << "; ";
-				std::cout << "Shine:" << shine << "; Transm: " << transm << "; idx Refraction:" << idxRefr;
+				std::cout << "Shine:" << shine << "; Transm: " << transm << "; idx Refraction: " << idxRefr;
 				//TODO add fill color
 			}
+			//CILINDER/CONE
 			else if (command == "c") {
 
 				//BASE
@@ -154,17 +152,14 @@ public:
 				std::cout << "Radius: " << apexR << std::endl;
 				//TODO create cone/cilinder
 			}
-			else if (command == "pl") {
-				std::cout << "Creating plane:" << std::endl;
-				Vector3 p1 = { std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]) };
-				Vector3 p2 = { std::stof(tokens[4]),std::stof(tokens[5]),std::stof(tokens[6]) };
-				Vector3 p3 = { std::stof(tokens[7]),std::stof(tokens[8]),std::stof(tokens[9]) };
-				//TODO create plan
-				std::cout << "Point 1 : "; printVector(p1);
-				std::cout << "Point 2 : "; printVector(p2);
-				std::cout << "Point 3 : "; printVector(p3);
-
+			//SPHERE
+			else if (command == "s") {
+				Vector3 sPos = { std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]) };
+				Sphere* sphere = new Sphere(sPos, std::stof(tokens[4]),matProperties);
+				std::cout << "Creating sphere at: " << sPos.x << ", " << sPos.y << ", " << sPos.z << ";" << std::endl << "with radius: " << tokens[4] << std::endl;
+				primitives.push_back(sphere);
 			}
+			//POLIGON
 			else if (command == "p") {
 				std::cout << "Creating Poligon: " << std::endl;
 				int tVertices = std::stoi(tokens[1]);
@@ -177,6 +172,7 @@ public:
 				}
 				//TODO Create Poligon
 			}
+			//POLIGONAL PATCH
 			else if (command == "pp") {
 				std::cout << "Creating Poligon Patch: " << std::endl;
 				int tVertices = std::stoi(tokens[1]);
@@ -191,6 +187,18 @@ public:
 					//TODO Create Vertices and norm objects?!?
 				}
 				//TODO Create Poligonal patch
+			}
+			//PLANE
+			else if (command == "pl") {
+				std::cout << "Creating plane:" << std::endl;
+				Vector3 p1 = { std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]) };
+				Vector3 p2 = { std::stof(tokens[4]),std::stof(tokens[5]),std::stof(tokens[6]) };
+				Vector3 p3 = { std::stof(tokens[7]),std::stof(tokens[8]),std::stof(tokens[9]) };
+				//TODO create plan
+				std::cout << "Point 1 : "; printVector(p1);
+				std::cout << "Point 2 : "; printVector(p2);
+				std::cout << "Point 3 : "; printVector(p3);
+
 			}
 			tokens = getTokensFromLine(inputFileStream);
 		}
