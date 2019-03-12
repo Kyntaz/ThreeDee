@@ -16,11 +16,11 @@
 
 class Scene
 {
+public:
 	Camera* camera;
 	std::vector<Primitive*> primitives;
 	std::vector<PositionalLight*> lights;
 	Color* background = new Color({ 0,0,0 });
-public:
 
 	Scene() {}
 	Camera* GetCamera() {
