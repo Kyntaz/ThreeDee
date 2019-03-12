@@ -35,9 +35,9 @@ public:
 	Collision intersect(Ray ray) {
 		Collision col;
 
-		float d_oc_sqr = (_pos.x - ray.origin.x) * (_pos.x * ray.origin.x) +
-			(_pos.y - ray.origin.y) * (_pos.y * ray.origin.y) +
-			(_pos.z - ray.origin.z) * (_pos.z * ray.origin.z);
+		float d_oc_sqr = (_pos.x - ray.origin.x) * (_pos.x - ray.origin.x) +
+			(_pos.y - ray.origin.y) * (_pos.y - ray.origin.y) +
+			(_pos.z - ray.origin.z) * (_pos.z - ray.origin.z);
 
 		float b = ray.versor.x * (_pos.x - ray.origin.x) +
 			ray.versor.y * (_pos.y - ray.origin.y) +
@@ -56,7 +56,7 @@ public:
 
 		float ti = (d_oc_sqr > _radius * _radius) ? (b - sqrt(r)) : (b + sqrt(r));
 		col.point = addVector(ray.origin, vector3MultScalar(ray.versor, ti));
-		col.normal = subVector(col.point, _pos);
+		col.normal = normalize(subVector(col.point, _pos));
 		col.object = this;
 
 		if (d_oc_sqr < _radius * _radius) {
@@ -88,15 +88,37 @@ public:
 class Plane : public Primitive {
 public:
 	Vector3 _p1, _p2, _p3;
+	Vector3 _normal;
 
 	Plane(Vector3 p1, Vector3 p2, Vector3 p3,MaterialProperties* matProps) :
-		Primitive(matProps), _p1(p1), _p2(p2), _p3(p3) {}
+		Primitive(matProps), _p1(p1), _p2(p2), _p3(p3) { 
+		_normal = externalProduct(subVector(_p2, _p1), subVector(_p2, _p3));
+	}
 
 	Collision intersect(Ray ray) {
-		//TODO: make it happen!
-		
 		Collision col;
 		col.object = nullptr;
+
+		float p = internalProduct(_normal,ray.versor);
+		//TODO: make it happen!
+		if (p == 0) {
+			//plane and ray are parallel, thus intersection is not computed
+			col.object = nullptr;
+			return col;
+		}
+
+		float ti = -((internalProduct(subVector(ray.origin,_p1),_normal))/(internalProduct(_normal,ray.versor)));
+
+		if (ti < 0) {
+			//intersection is behind the origin of the ray, thus we can reject ti
+			col.object = nullptr;
+			return col;
+		}
+
+		col.point = addVector(ray.origin, vector3MultScalar(ray.versor, ti));
+		col.normal = _normal;
+		col.object = this;
+
 		return col;
 	};
 };

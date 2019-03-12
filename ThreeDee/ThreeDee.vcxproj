@@ -158,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="positionallight.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="colors.h" />
     <ClInclude Include="primitives.h" />
