@@ -79,7 +79,9 @@ public:
 
 	Collision intersect(Ray ray) {
 		//TODO: make it happen!
-		return {};
+		Collision col;
+		col.object = nullptr;
+		return col;
 	};
 };
 
@@ -92,7 +94,10 @@ public:
 
 	Collision intersect(Ray ray) {
 		//TODO: make it happen!
-		return {};
+		
+		Collision col;
+		col.object = nullptr;
+		return col;
 	};
 };
 
@@ -105,7 +110,9 @@ public:
 
 	Collision intersect(Ray ray) {
 		//TODO: make it happen!
-		return {};
+		Collision col;
+		col.object = nullptr;
+		return col;
 	};
 };
 
@@ -118,6 +125,8 @@ public:
 
 	Collision intersect(Ray ray) {
 		//TODO: make it happen!
-		return {};
+		Collision col;
+		col.object = nullptr;
+		return col;
 	};
 };
