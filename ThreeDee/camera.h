@@ -40,7 +40,7 @@ public:
 	}
 
 	float GetPlaneSize() {
-		return 2 * nearC * tan(angle/2);
+		return 2 * nearC * tan(angle / 2);
 	}
 
 private:

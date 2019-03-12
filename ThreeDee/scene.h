@@ -73,7 +73,7 @@ public:
 
 				//ANGLE
 				tokens = getTokensFromLine(inputFileStream);
-				float angle = (3.1415 /180)*stof(tokens[1]);
+				float angle = (3.1415 /180) * stof(tokens[1]);
 
 				//HITHER
 				tokens = getTokensFromLine(inputFileStream);
