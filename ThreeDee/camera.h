@@ -28,7 +28,7 @@ public:
 	}
 
 	Vector3 GetRefZ() {
-		return vector3MultScalar(normalize(at), -1);
+		return vector3MultScalar(normalize(subVector(at, eye)), -1);
 	}
 
 	Vector3 GetRefX() {
