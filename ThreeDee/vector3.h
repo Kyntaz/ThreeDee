@@ -34,3 +34,7 @@ Vector3 externalProduct(Vector3 v1, Vector3 v2) {
 void printVector(Vector3 v) {
 	std::cout << v.x << ", " << v.y << ", " << v.z << std::endl;
 }
+
+Vector3 vector3MultScalar(Vector3 v, float c) {
+	return { v.x * c, v.y * c, v.z * c };
+}
