@@ -20,6 +20,7 @@ float vector3Length(Vector3 v1) {
 
 Vector3 normalize(Vector3 v1) {
 	float size = vector3Length(v1);
+	if (size <= 0) return v1;
 	return {v1.x / size, v1.y / size, v1.z / size};
 }
 
