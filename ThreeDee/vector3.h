@@ -39,3 +39,9 @@ void printVector(Vector3 v) {
 Vector3 vector3MultScalar(Vector3 v, float c) {
 	return { v.x * c, v.y * c, v.z * c };
 }
+
+float clamp(float v, float lo, float hi) {
+	if (v < lo) return lo;
+	if (v > hi) return hi;
+	return v;
+}
