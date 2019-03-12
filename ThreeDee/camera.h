@@ -23,6 +23,10 @@ public:
 		return at;
 	}
 
+	float GetHither() {
+		return nearC;
+	}
+
 	Vector3 GetRefY() {
 		return normalize(up);
 	}

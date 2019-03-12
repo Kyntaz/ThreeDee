@@ -35,9 +35,9 @@ public:
 	Collision intersect(Ray ray) {
 		Collision col;
 
-		float d_oc_sqr = (_pos.x - ray.origin.x) * (_pos.x * ray.origin.x) +
-			(_pos.y - ray.origin.y) * (_pos.y * ray.origin.y) +
-			(_pos.z - ray.origin.z) * (_pos.z * ray.origin.z);
+		float d_oc_sqr = (_pos.x - ray.origin.x) * (_pos.x - ray.origin.x) +
+			(_pos.y - ray.origin.y) * (_pos.y - ray.origin.y) +
+			(_pos.z - ray.origin.z) * (_pos.z - ray.origin.z);
 
 		float b = ray.versor.x * (_pos.x - ray.origin.x) +
 			ray.versor.y * (_pos.y - ray.origin.y) +
@@ -56,7 +56,7 @@ public:
 
 		float ti = (d_oc_sqr > _radius * _radius) ? (b - sqrt(r)) : (b + sqrt(r));
 		col.point = addVector(ray.origin, vector3MultScalar(ray.versor, ti));
-		col.normal = subVector(col.point, _pos);
+		col.normal = normalize(subVector(col.point, _pos));
 		col.object = this;
 
 		if (d_oc_sqr < _radius * _radius) {
