@@ -92,7 +92,7 @@ public:
 
 	Plane(Vector3 p1, Vector3 p2, Vector3 p3,MaterialProperties* matProps) :
 		Primitive(matProps), _p1(p1), _p2(p2), _p3(p3) { 
-		_normal = externalProduct(subVector(_p2, _p1), subVector(_p2, _p3));
+		_normal = normalize(externalProduct(subVector(_p2, _p1), subVector(_p3, _p1)));
 	}
 
 	Collision intersect(Ray ray) {
@@ -100,7 +100,6 @@ public:
 		col.object = nullptr;
 
 		float p = internalProduct(_normal,ray.versor);
-		//TODO: make it happen!
 		if (p == 0) {
 			//plane and ray are parallel, thus intersection is not computed
 			col.object = nullptr;
