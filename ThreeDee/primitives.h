@@ -6,6 +6,8 @@
 #include <math.h>
 #include <iostream>
 
+class Primitive; //This is needed so that we can have the object reference in the collision struct.
+
 struct _collision {
 	Primitive* object;
 	Vector3 point, normal;
@@ -62,7 +64,7 @@ public:
 		}
 
 		return col;
-	};
+	}
 };
 
 class Cilinder : public Primitive {
