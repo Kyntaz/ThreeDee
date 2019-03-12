@@ -4,6 +4,6 @@
 
 struct _ray {
 	Vector3 origin, versor;
-	float maxDistance;
+	bool inside;
 };
 typedef struct _ray Ray;
