@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <vector>
 #include <limits.h>
+#include <math.h>
 #include "primitives.h"
 #include "colors.h"
 #include "vector3.h"
@@ -72,7 +73,7 @@ public:
 
 				//ANGLE
 				tokens = getTokensFromLine(inputFileStream);
-				float angle = stof(tokens[1]);
+				float angle = (3.1415 /180)*stof(tokens[1]);
 
 				//HITHER
 				tokens = getTokensFromLine(inputFileStream);
