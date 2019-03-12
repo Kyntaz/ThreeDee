@@ -5,12 +5,14 @@
 #include <sstream>
 #include <stdio.h>
 #include <vector>
+#include <limits.h>
 #include "primitives.h"
 #include "colors.h"
 #include "vector3.h"
 #include "camera.h"
 #include "positionallight.h"
 #include "materialproperties.h"
+#include "ray.h"
 
 class Scene
 {
@@ -229,6 +231,18 @@ public:
 			tokens.push_back(temp);
 		}
 		return tokens;
+	}
+
+	Collision castRay(Ray ray) {
+		Collision col;
+		col.object = nullptr;
+		for (Primitive* p : primitives) {
+			Collision ncol = p->intersect(ray);
+			if (col.object == nullptr || vector3Length(subVector(ncol.point, camera->GetFrom())) < vector3Length(subVector(col.point, camera->GetFrom()))) {
+				col = ncol;
+			}
+		}
+		return col;
 	}
 
 private:
