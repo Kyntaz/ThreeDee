@@ -28,7 +28,7 @@ public:
 	}
 
 	Vector3 GetRefY() {
-		return normalize(up);
+		return externalProduct(GetRefZ(), GetRefX());
 	}
 
 	Vector3 GetRefZ() {
@@ -36,11 +36,15 @@ public:
 	}
 
 	Vector3 GetRefX() {
-		return normalize(externalProduct(GetRefY(), GetRefZ()));
+		return normalize(externalProduct(up, GetRefZ()));
 	}
 
-	float GetPlaneSize() {
+	float GetPlaneHeight() {
 		return 2 * nearC * tan(angle / 2);
+	}
+
+	float GetPlaneWidth() {
+		return (GetResX() / GetResY()) * GetPlaneHeight();
 	}
 
 private:
