@@ -84,6 +84,7 @@ public:
 		//TODO: make it happen!
 		Collision col;
 		col.object = nullptr;
+		col.inside = false;
 		return col;
 	};
 };
@@ -201,4 +202,91 @@ public:
 		col.object = nullptr;
 		return col;
 	};
+};
+
+class AxisAlignedBoundingBox : public Primitive {
+public:
+	Vector3 _p0, _p1;
+
+	AxisAlignedBoundingBox(Vector3 p0, Vector3 p1, MaterialProperties* matProps) : Primitive(matProps), _p0(p0), _p1(p1) {}
+
+	Collision intersect(Ray ray) {
+		Collision col;
+		col.object = nullptr;
+
+		float ox = ray.origin.x, oy = ray.origin.y, oz = ray.origin.z;
+		float dx = ray.versor.x, dy = ray.versor.y, dz = ray.versor.z;
+
+		col.inside = ox > _p0.x && ox < _p1.x &&
+			oy > _p0.y && oy < _p1.y &&
+			ox > _p0.z && oz < _p1.z;
+
+		float tx_min, ty_min, tz_min;
+		float tx_max, ty_max, tz_max;
+
+		float a = 1.0f / dx;
+		if (a >= 0) {
+			tx_min = (_p0.x - ox) * a;
+			tx_max = (_p1.x - ox) * a;
+		}
+		else {
+			tx_min = (_p1.x - ox) * a;
+			tx_max = (_p0.x - ox) * a;
+		}
+
+		float b = 1.0f / dy;
+		if (b >= 0) {
+			ty_min = (_p0.y - oy) * b;
+			ty_max = (_p1.y - oy) * b;
+		}
+		else {
+			ty_min = (_p1.y - oy) * b;
+			ty_max = (_p0.y - oy) * b;
+		}
+
+		float c = 1.0f / dz;
+		if (c >= 0) {
+			tz_min = (_p0.z - oz) * c;
+			tz_max = (_p1.z - oz) * c;
+		}
+		else {
+			tz_min = (_p1.z - oz) * c;
+			tz_max = (_p0.z - oz) * c;
+		}
+
+		float t0, t1;
+		
+		// find largest entering t val
+		if (tx_min > ty_min) {
+			t0 = tx_min;
+			col.normal = { 0, 0, 0 };
+			col.normal.x = (ray.versor.x > 0) ? -1 : 1;
+		}
+		else {
+			t0 = ty_min;
+			col.normal = { 0, 0, 0 };
+			col.normal.y = ray.versor.y > 0 ? -1 : 1;
+		}
+
+		if (tz_min > t0) {
+			t0 = tz_min;
+			col.normal = { 0, 0, 0 };
+			col.normal.z = ray.versor.z > 0 ? -1 : 1;
+		}
+
+		// find smallest exiting t val
+		if (tx_max < ty_max) t1 = tx_max;
+		else t1 = ty_max;
+
+		if (tz_max < t1) t1 = tz_max;
+
+		if (!(t0 < t1 && t0 > 0)) {
+			return col;
+		}
+
+		col.object = this;
+		col.point = addVector(ray.origin, vector3MultScalar(ray.versor, t0));
+
+		return col;
+	}
 };

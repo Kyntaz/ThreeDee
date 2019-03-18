@@ -216,6 +216,19 @@ public:
 				primitives.push_back(plane);
 
 			}
+			//AABB
+			else if (command == "ab") {
+				std::cout << "Creating AABB:" << std::endl;
+				Vector3 p1 = { std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]) };
+				Vector3 p2 = { std::stof(tokens[4]),std::stof(tokens[5]),std::stof(tokens[6]) };
+				//TODO create plan
+				std::cout << "Point 1 : "; printVector(p1);
+				std::cout << "Point 2 : "; printVector(p2);
+				AxisAlignedBoundingBox* aabb = new AxisAlignedBoundingBox(p1, p2, matProperties);
+				printMaterialProperties(*aabb->_matProps); std::cout << std::endl;
+				primitives.push_back(aabb);
+
+			}
 			tokens = getTokensFromLine(inputFileStream);
 		}
 
