@@ -143,6 +143,7 @@ public:
 		col.inside = false;
 
 		// I tried to make this look like the algorithm in the book for simplicity.
+		//Tomas Möller, Ben Trumbore
 		Vector3 v0 = _vertices[0];
 		Vector3 v1 = _vertices[1];
 		Vector3 v2 = _vertices[2];
