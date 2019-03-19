@@ -46,6 +46,7 @@ public:
 			ray.versor.z * (_pos.z - ray.origin.z);
 
 		if (d_oc_sqr > _radius * _radius && b < 0) {
+			//o raio aponta no sentido contrario ao centro da esfera 
 			col.object = nullptr;
 			return col;
 		}
