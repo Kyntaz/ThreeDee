@@ -275,17 +275,37 @@ public:
 		}
 
 		// find smallest exiting t val
-		if (tx_max < ty_max) t1 = tx_max;
-		else t1 = ty_max;
+		if (tx_max < ty_max) {
+			t1 = tx_max;
+			if (t1 <= t0) {
+				col.normal = { 0, 0, 0 };
+				col.normal.x = (ray.versor.x > 0) ? -1 : 1;
+			}
+		}
+		else {
+			t1 = ty_max;
+			if (t1 <= t0) {
+				col.normal = { 0, 0, 0 };
+				col.normal.y = (ray.versor.y > 0) ? -1 : 1;
+			}
+		}
 
-		if (tz_max < t1) t1 = tz_max;
+		if (tz_max < t1) {
+			t1 = tz_max;
+			if (t1 <= t0) {
+				col.normal = { 0, 0, 0 };
+				col.normal.z = (ray.versor.z > 0) ? -1 : 1;
+			}
+		}
 
-		if (!(t0 < t1 && t0 > 0)) {
+		float t = (col.inside) ? t1 : t0;
+
+		if (!(t0 < t1 && t1 > 0) || t < 0) {
 			return col;
 		}
 
 		col.object = this;
-		col.point = addVector(ray.origin, vector3MultScalar(ray.versor, t0));
+		col.point = addVector(ray.origin, vector3MultScalar(ray.versor, t));
 
 		return col;
 	}
