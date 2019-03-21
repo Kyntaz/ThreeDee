@@ -1,0 +1,8 @@
+# Exclude non-tex files.
+*.aux
+*.fdb_latexmk
+*.log
+*.files
+*.synctex.gz
+*.pdf
+*.fls
