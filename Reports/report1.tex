@@ -51,9 +51,9 @@
 
     \section{Leitura de Ficheiros NFF}
     
-    A leitura dos ficheiros que definem a cena foi é realizado por um \textit{parser} implementado usando um \textit{switch-case}. Este \textit{parser} lê todos os ficheiros válidos no formato nff, não validando qualquer tipo de valores, nem ordem na especificação da cena. Isto permite, portanto que sejam lidos alguns ficheiros que não são considerados como válidos.\par 
+    A leitura dos ficheiros que definem a cena foi é realizado por um \textit{parser} implementado, usando um \textit{switch-case}. Este \textit{parser} lê todos os ficheiros válidos no formato \textit{nff}, não validando qualquer tipo de valores, nem a ordem pela qual os elementos da cena são especificados. Isto permite, portanto que sejam lidos alguns ficheiros que não são considerados como válidos.\par 
     Estes casos não foram considerados como um problema no âmbito da cadeira e, caso o ficheiro não seja válido, não é garantido o funcionamento correcto do programa.\par
-    O \textit{parser} implementado lê cada linha do ficheiro separadamente e executa uma parte do código especificado para o comando correspondente, lendo as linhas necessárias para a criação do objecto na cena.
+    O \textit{parser} implementado lê cada linha do ficheiro separadamente, criando o elemento correspondente na cena. Caso seja necessário ler mais que uma linha do ficheiro para especificar completamente um objecto (e.g. \textit{poligon patch}), são lidas linhas extraordinárias de forma a obter a informação completa do objecto. Após lidas todas as linhas que especificam um objecto na cena, o objecto é criado.
     
 
     \section{Raios Primários}
