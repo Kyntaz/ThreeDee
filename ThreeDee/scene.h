@@ -20,7 +20,7 @@ class Scene
 public:
 	Camera* camera;
 	std::vector<Primitive*> primitives;
-	std::vector<PositionalLight*> lights;
+	std::vector<Light*> lights;
 	Color* background = new Color({ 0,0,0 });
 
 	Scene() {}
@@ -115,7 +115,31 @@ public:
 					b = std::stof(tokens[6]);
 					RGB = { r, g, b };
 				}
-				lights.push_back(new PositionalLight({ lPos, RGB }));
+				lights.push_back(new Light(lPos, RGB));
+				std::cout << "light position: " << lPos.x << ", " << lPos.y << ", " << lPos.z << std::endl;
+				std::cout << "light rgb: " << RGB.r << ", " << RGB.g << ", " << RGB.b << std::endl << std::endl;
+			}
+			else if (command == "al") {
+				std::cout << "Creating Area light" << std::endl;
+				//pos
+				Vector3 p1, p2, p3;
+				Vector3 lPos = { std::stof(tokens[1]), std::stof(tokens[2]), std::stof(tokens[3]) };
+				
+				
+				//rgb
+				Color RGB = { 1, 1, 1 };
+				p1 = { std::stof(tokens[4]), std::stof(tokens[5]), std::stof(tokens[6])};
+				p2 = { std::stof(tokens[7]), std::stof(tokens[8]), std::stof(tokens[9])};
+				p3 = { std::stof(tokens[10]), std::stof(tokens[11]), std::stof(tokens[12])};
+
+				if (tokens.size() == 16) {//if rgb defined
+					float r, g, b;
+					r = std::stof(tokens[13]);
+					g = std::stof(tokens[14]);
+					b = std::stof(tokens[15]);
+					RGB = { r, g, b };
+				}
+				lights.push_back(new AreaLight(lPos, RGB, p1, p2, p3));
 				std::cout << "light position: " << lPos.x << ", " << lPos.y << ", " << lPos.z << std::endl;
 				std::cout << "light rgb: " << RGB.r << ", " << RGB.g << ", " << RGB.b << std::endl << std::endl;
 			}
