@@ -3,11 +3,17 @@
 #include "ray.h"
 #include "vector3.h"
 #include "materialproperties.h"
+#include "utils.h"
 #include <math.h>
 #include <iostream>
 
+
 class Primitive; //This is needed so that we can have the object reference in the collision struct.
 
+struct _AABB {
+	Vector3 pmin, pmax;
+};
+typedef struct _AABB AABB;
 struct _collision {
 	Primitive* object;
 	Vector3 point, normal;
@@ -28,9 +34,9 @@ class Sphere : public Primitive {
 public:
 	float _radius;
 	Vector3 _pos;
-
+	AABB aabb;
 	Sphere(Vector3 pos, float r, MaterialProperties *matProps) : Primitive( matProps), _pos(pos), _radius(r) {
-
+		AABB = {{pos.x-r,pos.y-r,}}
 	}
 
 	Collision intersect(Ray ray) {
