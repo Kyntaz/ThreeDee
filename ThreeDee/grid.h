@@ -1,15 +1,14 @@
 #pragma once
 #include "vector3.h"
 #include "utils.h"
+#include "aabb.h"
 #include "primitives.h"
 #include <limits>
 #include <math.h>
 
 #define M 2
-struct _AABB {
-	Vector3 pmin, pmax;
-};
-typedef struct _AABB AABB;
+
+
 
 struct _traverseInfo {
 	bool collision;
@@ -121,12 +120,12 @@ class Grid{
 	int m = M;
 	int Nx, Ny, Nz;
 
-	std::vector<std::vector<Primitive*> > cells;
+	std::vector<std::vector<Primitive*>> cells;
 
 public:
 
-	int calculateGridIndex(Vector3 i) {
-		return i.x + Nx * i.y + Nx * Ny * i.z;
+	int calculateGridIndex(int ix,int iy,int iz) {
+		return ix + Nx * iy + Nx * Ny * iz;
 	}
 	
 
@@ -165,18 +164,18 @@ public:
 		}
 		for (Primitive* p : primitives){
 			/* Compute indices of both cells that contain min and max coord of obj bbox*/
-			int ixmin = clamp(((p->aabb.pmin.x - gridAABB.pmin.x) * Nx / (gridAABB.pmax.x - gridAABB.pmin.x)), 0, Nx - 1);
-			int iymin = clamp(((p->aabb.pmin.y - gridAABB.pmin.y) * Ny / (gridAABB.pmax.y - gridAABB.pmin.y)), 0, Ny - 1);
-			int izmin = clamp(((p->aabb.pmin.z - gridAABB.pmin.z) * Nz / (gridAABB.pmax.z - gridAABB.pmin.z)), 0, Nz - 1);
-			int ixmax = clamp(((p->aabb.pmax.x - gridAABB.pmin.x) * Nx / (gridAABB.pmax.x - gridAABB.pmin.x)), 0, Nx - 1);
-			int iymax = clamp(((p->aabb.pmax.y - gridAABB.pmin.y) * Ny / (gridAABB.pmax.y - gridAABB.pmin.y)), 0, Ny - 1);
-			int izmax = clamp(((p->aabb.pmax.z - gridAABB.pmin.z) * Nz / (gridAABB.pmax.z - gridAABB.pmin.z)), 0, Nz - 1);
+			int ixmin = clamp((p->aabb.pmin.x - gridAABB.pmin.x) * Nx / (gridAABB.pmax.x - gridAABB.pmin.x), 0, Nx - 1);
+			int iymin = clamp((p->aabb.pmin.y - gridAABB.pmin.y) * Ny / (gridAABB.pmax.y - gridAABB.pmin.y), 0, Ny - 1);
+			int izmin = clamp((p->aabb.pmin.z - gridAABB.pmin.z) * Nz / (gridAABB.pmax.z - gridAABB.pmin.z), 0, Nz - 1);
+			int ixmax = clamp((p->aabb.pmax.x - gridAABB.pmin.x) * Nx / (gridAABB.pmax.x - gridAABB.pmin.x), 0, Nx - 1);
+			int iymax = clamp((p->aabb.pmax.y - gridAABB.pmin.y) * Ny / (gridAABB.pmax.y - gridAABB.pmin.y), 0, Ny - 1);
+			int izmax = clamp((p->aabb.pmax.z - gridAABB.pmin.z) * Nz / (gridAABB.pmax.z - gridAABB.pmin.z), 0, Nz - 1);
 			/*insert obj to the overlaped cells*/
 			
 			for (int iz = izmin; iz <= izmax; iz++) {
 				for (int iy = iymin; iy <= iymax; iy++) {
 					for (int ix = ixmin; ix <= ixmax; ix++) {
-						int idx = calculateGridIndex({ ix,iy,iz });
+						int idx = calculateGridIndex( ix, iy, iz );
 						cells[idx].push_back(p);
 					}
 				}
@@ -262,7 +261,7 @@ public:
 			iz_stop = -1;
 		}
 		while (true) {
-			std::vector<Primitive*> pVector = cells[calculateGridIndex({ix, iy, iz})];
+			std::vector<Primitive*> pVector = cells[calculateGridIndex(ix, iy, iz)];
 			if (tx_next < ty_next && tx_next < tz_next) {
 				for (Primitive* p : pVector) {
 					Collision c = p->intersect(ray);

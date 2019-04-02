@@ -3,7 +3,7 @@
 #include "ray.h"
 #include "vector3.h"
 #include "materialproperties.h"
-#include "grid.h"
+#include "aabb.h"
 #include "utils.h"
 
 #include <math.h>
@@ -11,7 +11,6 @@
 
 
 class Primitive; //This is needed so that we can have the object reference in the collision struct.
-
 
 
 struct _collision {

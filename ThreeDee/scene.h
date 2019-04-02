@@ -8,6 +8,7 @@
 #include <limits.h>
 #include <math.h>
 #include "primitives.h"
+#include "grid.h"
 #include "colors.h"
 #include "vector3.h"
 #include "camera.h"
