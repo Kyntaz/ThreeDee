@@ -260,4 +260,3 @@ paket-files/
 __pycache__/
 *.pyc
 /Ray Tracing From The Ground Up.pdf
-/ThreeDee/Dependencies/freeglut/freeglut.lib
