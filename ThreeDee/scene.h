@@ -287,14 +287,14 @@ public:
 		if (!isGridActivated) {
 			for (Primitive* p : primitives) {
 				Collision ncol = p->intersect(ray);
-				if (col.object == nullptr || vector3Length(subVector(ncol.point, camera->GetFrom())) < vector3Length(subVector(col.point, camera->GetFrom()))) {
+				if (col.object == nullptr || vector3Length(subVector(ncol.point, ray.origin)) < vector3Length(subVector(col.point, ray.origin))) {
 					col = ncol;
 				}
 			}
 			return col;
 		}
 		else {
-
+			return grid->traverse(ray);
 		}
 	}
 
@@ -302,5 +302,6 @@ public:
 		grid = new Grid(primitives);
 
 	}
+
 private:
 };

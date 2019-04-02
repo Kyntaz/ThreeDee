@@ -240,7 +240,7 @@ public:
 
 		col.inside = ox > _p0.x && ox < _p1.x &&
 			oy > _p0.y && oy < _p1.y &&
-			ox > _p0.z && oz < _p1.z;
+			oz > _p0.z && oz < _p1.z;
 
 		float tx_min, ty_min, tz_min;
 		float tx_max, ty_max, tz_max;

@@ -20,3 +20,10 @@ float min(float f1, float f2, float f3) {
 float max(float f1, float f2, float f3) {
 	return std::max(std::max(f1, f2), f3);
 }
+
+float getMaxFloat() {
+	return std::numeric_limits<float>::max();
+}
+float getMinFloat() {
+	return std::numeric_limits<float>::min();
+}
