@@ -3,17 +3,17 @@
 #include "ray.h"
 #include "vector3.h"
 #include "materialproperties.h"
+#include "grid.h"
 #include "utils.h"
+
 #include <math.h>
 #include <iostream>
 
 
 class Primitive; //This is needed so that we can have the object reference in the collision struct.
 
-struct _AABB {
-	Vector3 pmin, pmax;
-};
-typedef struct _AABB AABB;
+
+
 struct _collision {
 	Primitive* object;
 	Vector3 point, normal;
@@ -24,6 +24,7 @@ typedef struct _collision Collision;
 class Primitive {
 public:
 	MaterialProperties* _matProps;
+	AABB aabb;
 	Primitive( MaterialProperties *matProps) {
 		_matProps = matProps;
 	}
@@ -34,9 +35,10 @@ class Sphere : public Primitive {
 public:
 	float _radius;
 	Vector3 _pos;
-	AABB aabb;
-	Sphere(Vector3 pos, float r, MaterialProperties *matProps) : Primitive( matProps), _pos(pos), _radius(r) {
-		AABB = {{pos.x-r,pos.y-r,}}
+	Sphere(Vector3 pos, float r, MaterialProperties *matProps) : Primitive(matProps), _pos(pos), _radius(r) {
+		aabb = { {pos.x - r - EPSILON, pos.y - r - EPSILON, pos.z - r - EPSILON},
+		{pos.x + r + EPSILON, pos.y + r + EPSILON, pos.z + r + EPSILON} };
+	
 	}
 
 	Collision intersect(Ray ray) {
@@ -143,6 +145,17 @@ public:
 	Poligon(std::vector<Vector3> vtxs, MaterialProperties* matProps) :
 		Primitive(matProps), _vertices(vtxs) {
 		_normal = normalize(externalProduct(subVector(_vertices[1], _vertices[0]), subVector(_vertices[2], _vertices[0])));
+		aabb = {
+			//pmin = min todas as componentes de todos os vertices
+			{min(_vertices[0].x, _vertices[1]. x,_vertices[2].x),     //minx
+				min(_vertices[0].y, _vertices[1].y, _vertices[2].y),  //miny
+				min(_vertices[0].z, _vertices[1].z, _vertices[2].z)}, //minz
+			//pmax = max todas as componentes de todos os vertices	 
+			{max(_vertices[0].x, _vertices[1].x, _vertices[2].x),     //maxx
+				max(_vertices[0].y, _vertices[1].y, _vertices[2].y),  //maxy
+				max(_vertices[0].z, _vertices[1].z, _vertices[2].z)}  //maxz
+		};
+
 	}
 
 	Collision intersect(Ray ray) {

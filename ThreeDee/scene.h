@@ -23,7 +23,10 @@ public:
 	std::vector<Light*> lights;
 	Color* background = new Color({ 0,0,0 });
 
-	Scene() {}
+	Grid* grid;
+	bool isGridActivated;
+	
+	Scene(bool gridOptimization): isGridActivated(gridOptimization){}
 	Camera* GetCamera() {
 		return camera;
 	}
@@ -274,14 +277,23 @@ public:
 	Collision castRay(Ray ray) {
 		Collision col;
 		col.object = nullptr;
-		for (Primitive* p : primitives) {
-			Collision ncol = p->intersect(ray);
-			if (col.object == nullptr || vector3Length(subVector(ncol.point, camera->GetFrom())) < vector3Length(subVector(col.point, camera->GetFrom()))) {
-				col = ncol;
+		if (!isGridActivated) {
+			for (Primitive* p : primitives) {
+				Collision ncol = p->intersect(ray);
+				if (col.object == nullptr || vector3Length(subVector(ncol.point, camera->GetFrom())) < vector3Length(subVector(col.point, camera->GetFrom()))) {
+					col = ncol;
+				}
 			}
+			return col;
 		}
-		return col;
+		else {
+
+		}
 	}
 
+	void initializeGrid() {
+		grid = new Grid(primitives);
+
+	}
 private:
 };

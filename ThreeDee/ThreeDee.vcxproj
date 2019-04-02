@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="grid.h" />
     <ClInclude Include="positionallight.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="colors.h" />
