@@ -1,5 +1,8 @@
 #pragma once
 #include <stdlib.h>
+
+#define EPSILON 0.0002f
+
 float generateRandom(float minValue, float maxValue) {
 	return minValue + (maxValue - minValue) * ((float)rand() / RAND_MAX);
 }

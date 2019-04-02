@@ -1,12 +1,19 @@
 #pragma once
 #include "vector3.h"
+#include <algorithm>
+
 class Camera
 {
 	Camera() {}
 	
 public:
-	Camera(Vector3 from, Vector3 at, Vector3 up, float angle, float hither, int resX, int resY) :
-		eye(from), at(at), up(up), angle(angle), nearC(hither), resX(resX), resY(resY) {
+	float lens_radius;
+	float focal_distance;
+
+	std::vector<Vector3> samples;
+
+	Camera(Vector3 from, Vector3 at, Vector3 up, float angle, float hither, int resX, int resY, float focus, float rad) :
+		eye(from), at(at), up(up), angle(angle), nearC(hither), resX(resX), resY(resY), lens_radius(rad), focal_distance(focus) {
 	}
 	int GetResX() {
 		return resX;
@@ -47,8 +54,38 @@ public:
 		return (GetResX() / GetResY()) * GetPlaneHeight();
 	}
 
+	void GenerateSamples(int n) {
+		samples = std::vector<Vector3>();
+
+		for (int i = 0; i < n*n; i++) {
+			// Rejection Sampling:
+			float xx = generateRandom(-lens_radius, lens_radius);
+			float yy = generateRandom(-lens_radius, lens_radius);
+			while (xx*xx + yy*yy > lens_radius * lens_radius) {
+				xx = generateRandom(-lens_radius, lens_radius);
+				yy = generateRandom(-lens_radius, lens_radius);
+			}
+
+			
+			samples.push_back({ xx, yy, 0 });
+		}
+
+		std::random_shuffle(samples.begin(), samples.end());
+	}
+
+	Vector3 GetSample() {
+		return samples[idx = (idx + 1) % samples.size()];
+	}
+
+	Vector3 GetPointInFocalPlane(Vector3 ps) {
+		float px = ps.x * (focal_distance / nearC);
+		float py = ps.y * (focal_distance / nearC);
+		return { px, py, -focal_distance };
+	}
+
 private:
 	Vector3 eye, at, up;
 	float angle, nearC;
 	int resX, resY;
+	int idx = 0;
 };
