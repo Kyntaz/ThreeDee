@@ -157,9 +157,9 @@ public:
 		Ny = floor(m * wy / s) + 1;
 		Nz = floor(m * wz / s) + 1;
 		
-		int totalNrCells = m * m * m * nrPrimitives;
+		int totalNrCells = Nx * Ny * Nz;
 		/*Inicialização das Celulas (1D ARRAY)*/
-		for (int i = 0; i < totalNrCells; i++) {
+		for (int i = 0; i <= totalNrCells; i++) {
 			cells.push_back(std::vector<Primitive*>());
 		}
 		for (Primitive* p : primitives){
@@ -187,6 +187,8 @@ public:
 	Collision traverse(Ray ray) {
 		TraverseInfo* tInfo = RayAABBIntersection(gridAABB, ray);
 		Collision result;
+		result.object = nullptr;
+		result.inside = false;
 
 		if (!tInfo->collision) {
 			return { nullptr,{0, 0, 0},{0, 0, 0},false };
