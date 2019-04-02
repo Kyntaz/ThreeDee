@@ -86,12 +86,19 @@ public:
 				tokens = getTokensFromLine(inputFileStream);
 				int resx = stoi(tokens[1]);
 				int resy = stoi(tokens[2]);
-				camera = new Camera(from, at, up, angle, hither, resx, resy);
+
+				//LENS
+				tokens = getTokensFromLine(inputFileStream);
+				float focus = stof(tokens[1]);
+				float rad = stof(tokens[2]);
+
+				camera = new Camera(from, at, up, angle, hither, resx, resy, focus, rad);
 				std::cout << "Viewport:" << std::endl;
 				std::cout << "from: " << from.x << ", " << from.y << ", " << from.z << ", " << std::endl;
 				std::cout << "at: " << at.x << ", " << at.x << ", " << at.z << ", " << std::endl;
 				std::cout << "up: " << up.x << ", " << up.y << ", " << up.z << ", " << std::endl;
 				std::cout << "angle: " << angle << std::endl;
+				std::cout << "focus: " << focus << std::endl;
 				std::cout << "hither: " << hither << std::endl;
 				std::cout << "res: " << resx << ", " << resy << std::endl << std::endl;
 			}
