@@ -26,6 +26,10 @@ public:
 		return samples[idx = (idx + 1) % samples.size()];
 	}
 
+	virtual Vector3 getCenter() {
+		return pos;
+	}
+
 private:
 	int idx = 0;
 };
@@ -52,5 +56,14 @@ public:
 		}
 
 		std::random_shuffle(samples.begin(), samples.end());
+	}
+
+	Vector3 getCenter() {
+		Vector3 v1 = subVector(p2, p1);
+		Vector3 v2 = subVector(p3, p1);
+
+		Vector3 sample = addVector(p1, vector3MultScalar(v1, 0.5f));
+		sample = addVector(sample, vector3MultScalar(v2, 0.5f));
+		return sample;
 	}
 };
