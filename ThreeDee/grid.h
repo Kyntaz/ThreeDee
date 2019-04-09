@@ -159,7 +159,7 @@ public:
 		
 		int totalNrCells = Nx * Ny * Nz;
 		/*Inicialização das Celulas (1D ARRAY)*/
-		for (int i = 0; i <= totalNrCells; i++) {
+		for (int i = 0; i < totalNrCells; i++) {
 			cells.push_back(std::vector<Primitive*>());
 		}
 		for (Primitive* p : primitives){
@@ -215,7 +215,7 @@ public:
 		int ix_step, iy_step, iz_step;
 		int ix_stop, iy_stop, iz_stop;
 
-		if (dtx > 0) {
+		if (ray.versor.x > 0) {
 			tx_next = tInfo->tmin.x + (ix + 1) * dtx;
 			ix_step = +1;
 			ix_stop = Nx;
@@ -225,13 +225,13 @@ public:
 			ix_step = -1;
 			ix_stop = -1;
 		}
-		if (dtx == 0.0f) {
+		if (ray.versor.x == 0.0f) {
 			tx_next = getMaxFloat();
 			ix_step = -1; // just to initialize. Never used
 			ix_stop = -1;
 		}
 
-		if (dty > 0) {
+		if (ray.versor.y > 0) {
 			ty_next = tInfo->tmin.y + (iy + 1) * dty;
 			iy_step = +1;
 			iy_stop = Ny;
@@ -241,13 +241,13 @@ public:
 			iy_step = -1;
 			iy_stop = -1;
 		}
-		if (dty == 0.0f) {
+		if (ray.versor.y == 0.0f) {
 			ty_next = getMaxFloat();
 			iy_step = -1; // just to initialize. Never used
 			iy_stop = -1;
 		}
 
-		if (dtz > 0) {
+		if (ray.versor.z > 0) {
 			tz_next = tInfo->tmin.z + (iz + 1) * dtz;
 			iz_step = +1;
 			iz_stop = Nz;
@@ -257,7 +257,7 @@ public:
 			iz_step = -1;
 			iz_stop = -1;
 		}
-		if (dtz == 0.0f) {
+		if (ray.versor.z == 0.0f) {
 			tz_next = getMaxFloat();
 			iz_step = -1; // just to initialize. Never used
 			iz_stop = -1;
