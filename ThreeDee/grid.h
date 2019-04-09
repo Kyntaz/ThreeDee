@@ -31,7 +31,7 @@ bool isPointInsideAABB(Vector3 p, AABB aabb) {
 		p.z > p0z && p.z < p1z;
 }
 
-TraverseInfo* RayAABBIntersection(AABB aabb, Ray ray) {
+TraverseInfo RayAABBIntersection(AABB aabb, Ray ray) {
 	
 
 	float ox = ray.origin.x, oy = ray.origin.y, oz = ray.origin.z;
@@ -106,12 +106,12 @@ TraverseInfo* RayAABBIntersection(AABB aabb, Ray ray) {
 		tz_min, tz_max = tz_max, tz_min;
 	}
 
-	TraverseInfo* tInfo = new TraverseInfo();
-	tInfo->collision = (t0 < t1 && t1 > EPSILON);
-	tInfo->t0 = t0;
-	tInfo->t1 = t1;
-	tInfo->tmin = { tx_min,ty_min,tz_min };
-	tInfo->tmax = { tx_max,ty_max,tz_max };
+	TraverseInfo tInfo = TraverseInfo();
+	tInfo.collision = (t0 < t1 && t1 > EPSILON);
+	tInfo.t0 = t0;
+	tInfo.t1 = t1;
+	tInfo.tmin = { tx_min,ty_min,tz_min };
+	tInfo.tmax = { tx_max,ty_max,tz_max };
 	return tInfo;
 }
 
@@ -159,7 +159,7 @@ public:
 		
 		int totalNrCells = Nx * Ny * Nz;
 		/*Inicialização das Celulas (1D ARRAY)*/
-		for (int i = 0; i <= totalNrCells; i++) {
+		for (int i = 0; i < totalNrCells; i++) {
 			cells.push_back(std::vector<Primitive*>());
 		}
 		for (Primitive* p : primitives){
@@ -185,12 +185,12 @@ public:
 
 
 	Collision traverse(Ray ray) {
-		TraverseInfo* tInfo = RayAABBIntersection(gridAABB, ray);
+		TraverseInfo tInfo = RayAABBIntersection(gridAABB, ray);
 		Collision result;
 		result.object = nullptr;
 		result.inside = false;
 
-		if (!tInfo->collision) {
+		if (!tInfo.collision) {
 			return { nullptr,{0, 0, 0},{0, 0, 0},false };
 		}
 		int ix, iy, iz;
@@ -201,63 +201,63 @@ public:
 			iz = clamp((ray.origin.z - gridAABB.pmin.z) * Nz / (gridAABB.pmax.z - gridAABB.pmin.z), 0, Nz - 1);
 		}
 		else {
-			Vector3 p = addVector(ray.origin, vector3MultScalar(ray.versor, tInfo->t0));
+			Vector3 p = addVector(ray.origin, vector3MultScalar(ray.versor, tInfo.t0));
 			ix = clamp((p.x - gridAABB.pmin.x) * Nx / (gridAABB.pmax.x - gridAABB.pmin.x), 0, Nx - 1);
 			iy = clamp((p.y - gridAABB.pmin.y) * Ny / (gridAABB.pmax.y - gridAABB.pmin.y), 0, Ny - 1);
 			iz = clamp((p.z - gridAABB.pmin.z) * Nz / (gridAABB.pmax.z - gridAABB.pmin.z), 0, Nz - 1);
 		}
 		// ray parameter increments per cell in the x, y, and z directions
 
-		float dtx = (tInfo->tmax.x - tInfo->tmin.x) / Nx;
-		float dty = (tInfo->tmax.y - tInfo->tmin.y) / Ny;
-		float dtz = (tInfo->tmax.z - tInfo->tmin.z) / Nz;
+		float dtx = (tInfo.tmax.x - tInfo.tmin.x) / Nx;
+		float dty = (tInfo.tmax.y - tInfo.tmin.y) / Ny;
+		float dtz = (tInfo.tmax.z - tInfo.tmin.z) / Nz;
 		float tx_next, ty_next, tz_next;
 		int ix_step, iy_step, iz_step;
 		int ix_stop, iy_stop, iz_stop;
 
-		if (dtx > 0) {
-			tx_next = tInfo->tmin.x + (ix + 1) * dtx;
+		if (ray.versor.x > 0) {
+			tx_next = tInfo.tmin.x + (ix + 1) * dtx;
 			ix_step = +1;
 			ix_stop = Nx;
 		}
 		else {
-			tx_next = tInfo->tmin.x + (Nx - ix) * dtx;
+			tx_next = tInfo.tmin.x + (Nx - ix) * dtx;
 			ix_step = -1;
 			ix_stop = -1;
 		}
-		if (dtx == 0.0f) {
+		if (ray.versor.x == 0.0f) {
 			tx_next = getMaxFloat();
 			ix_step = -1; // just to initialize. Never used
 			ix_stop = -1;
 		}
 
-		if (dty > 0) {
-			ty_next = tInfo->tmin.y + (iy + 1) * dty;
+		if (ray.versor.y > 0) {
+			ty_next = tInfo.tmin.y + (iy + 1) * dty;
 			iy_step = +1;
 			iy_stop = Ny;
 		}
 		else {
-			ty_next = tInfo->tmin.y + (Ny - iy) * dty;
+			ty_next = tInfo.tmin.y + (Ny - iy) * dty;
 			iy_step = -1;
 			iy_stop = -1;
 		}
-		if (dty == 0.0f) {
+		if (ray.versor.y == 0.0f) {
 			ty_next = getMaxFloat();
 			iy_step = -1; // just to initialize. Never used
 			iy_stop = -1;
 		}
 
-		if (dtz > 0) {
-			tz_next = tInfo->tmin.z + (iz + 1) * dtz;
+		if (ray.versor.z > 0) {
+			tz_next = tInfo.tmin.z + (iz + 1) * dtz;
 			iz_step = +1;
 			iz_stop = Nz;
 		}
 		else {
-			tz_next = tInfo->tmin.z + (Nz - iz) * dtz;
+			tz_next = tInfo.tmin.z + (Nz - iz) * dtz;
 			iz_step = -1;
 			iz_stop = -1;
 		}
-		if (dtz == 0.0f) {
+		if (ray.versor.z == 0.0f) {
 			tz_next = getMaxFloat();
 			iz_step = -1; // just to initialize. Never used
 			iz_stop = -1;

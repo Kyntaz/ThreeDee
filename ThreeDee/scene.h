@@ -242,13 +242,15 @@ public:
 				Vector3 p1 = { std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]) };
 				Vector3 p2 = { std::stof(tokens[4]),std::stof(tokens[5]),std::stof(tokens[6]) };
 				Vector3 p3 = { std::stof(tokens[7]),std::stof(tokens[8]),std::stof(tokens[9]) };
+				std::vector<Vector3> vertices1, vertices2;
 				//TODO create plan
 				std::cout << "Point 1 : "; printVector(p1);
 				std::cout << "Point 2 : "; printVector(p2);
 				std::cout << "Point 3 : "; printVector(p3);
-				Plane* plane = new Plane(p1, p2, p3, matProperties);
-				printMaterialProperties(*plane->_matProps); std::cout << std::endl;
-				primitives.push_back(plane);
+				vertices1.push_back(p1); vertices1.push_back(p2); vertices1.push_back(p3);
+				Poligon* poligon = new Poligon(vertices1, matProperties);
+				printMaterialProperties(*poligon->_matProps); std::cout << std::endl;
+				//primitives.push_back(poligon);
 
 			}
 			//AABB

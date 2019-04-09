@@ -7,8 +7,8 @@ class Camera
 	Camera() {}
 	
 public:
-	float lens_radius;
-	float focal_distance;
+	float lens_radius = 0;
+	float focal_distance = 1;
 
 	std::vector<Vector3> samples;
 
