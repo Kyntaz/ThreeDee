@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <algorithm>
 #define EPSILON 0.0002f
+#define SAMPLE_MODE	1  //0 for regular sampling, 1 for Jittering sampling, 2 for Stochastic sampling
+#define SAMPLE_MODE_LIGTH 1 //0 for regular sampling, 1 for Jittering sampling, 2 for Stochastic sampling
 
 float generateRandom(float minValue, float maxValue) {
 	return minValue + (maxValue - minValue) * ((float)rand() / RAND_MAX);

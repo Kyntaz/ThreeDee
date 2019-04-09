@@ -44,18 +44,42 @@ public:
 		samples = std::vector<Vector3>();
 		Vector3 v1 = subVector(p2, p1);
 		Vector3 v2 = subVector(p3, p1);
-
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				float xx = generateRandom((float)i / n, (float)(i + 1) / n);
-				float yy = generateRandom((float)j / n, (float)(j + 1) / n);
-				Vector3 sample = addVector(p1, vector3MultScalar(v1, xx));
-				sample = addVector(sample, vector3MultScalar(v2, yy));
-				samples.push_back(sample);
+		switch (SAMPLE_MODE_LIGTH) {  //0 for regular sampling, 1 for Jittering sampling, 2 for Stochastic sampling
+		case 0: //0 for regular sampling
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					float xx = ((float)i + 0.5) / n;
+					float yy = ((float)j + 0.5) / n;
+					Vector3 sample = addVector(p1, vector3MultScalar(v1, xx));
+					sample = addVector(sample, vector3MultScalar(v2, yy));
+					samples.push_back(sample);
+				}
 			}
+			std::random_shuffle(samples.begin(), samples.end());
+			break;
+		case 1: //1 for Jittering sampling
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					float xx = generateRandom((float)i / n, (float)(i + 1) / n);
+					float yy = generateRandom((float)j / n, (float)(j + 1) / n);
+					Vector3 sample = addVector(p1, vector3MultScalar(v1, xx));
+					sample = addVector(sample, vector3MultScalar(v2, yy));
+					samples.push_back(sample);
+				}
+			}
+			std::random_shuffle(samples.begin(), samples.end());
+			break;
+		case 2: //2 for Stochastic sampling
+			for (int i = 0; i < n * n; i++) {
+					float xx = generateRandom(0, 1);
+					float yy = generateRandom(0, 1);
+					Vector3 sample = addVector(p1, vector3MultScalar(v1, xx));
+					sample = addVector(sample, vector3MultScalar(v2, yy));
+					samples.push_back(sample);
+			}
+			std::random_shuffle(samples.begin(), samples.end());
+			break;
 		}
-
-		std::random_shuffle(samples.begin(), samples.end());
 	}
 
 	Vector3 getCenter() {
