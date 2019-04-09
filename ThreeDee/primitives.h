@@ -20,13 +20,32 @@ struct _collision {
 };
 typedef struct _collision Collision;
 
+struct _cachedCollision {
+	Collision col;
+	int rayId;
+};
+typedef _cachedCollision CachedCollision;
+
 class Primitive {
 public:
 	MaterialProperties* _matProps;
 	AABB aabb;
+	CachedCollision collisionCache;
+
 	Primitive( MaterialProperties *matProps) {
 		_matProps = matProps;
+		collisionCache.rayId = -1;
 	}
+
+	bool checkCache(int rayId) {
+		return collisionCache.rayId == rayId;
+	}
+
+	void cacheCollision(Collision col, Ray ray) {
+		collisionCache.col = col;
+		collisionCache.rayId = ray.id;
+	}
+
 	virtual Collision intersect(Ray ray) = 0;
 };
 
@@ -41,6 +60,7 @@ public:
 	}
 
 	Collision intersect(Ray ray) {
+		if (checkCache(ray.id)) return collisionCache.col;
 		Collision col;
 		col.inside = false;
 
@@ -74,6 +94,7 @@ public:
 			col.inside = true;
 		}
 
+		cacheCollision(col, ray);
 		return col;
 	}
 };
@@ -108,6 +129,7 @@ public:
 	}
 
 	Collision intersect(Ray ray) {
+		if (checkCache(ray.id)) return collisionCache.col;
 		Collision col;
 		col.object = nullptr;
 		col.inside = false;
@@ -131,6 +153,7 @@ public:
 		col.normal = _normal;
 		col.object = this;
 
+		cacheCollision(col, ray);
 		return col;
 	};
 };
@@ -158,6 +181,7 @@ public:
 	}
 
 	Collision intersect(Ray ray) {
+		if (checkCache(ray.id)) return collisionCache.col;
 		Collision col;
 		col.inside = false;
 
@@ -205,6 +229,7 @@ public:
 		col.normal = _normal;
 		col.object = this;
 
+		cacheCollision(col, ray);
 		return col;
 	};
 };
@@ -231,6 +256,7 @@ public:
 	AxisAlignedBoundingBox(Vector3 p0, Vector3 p1, MaterialProperties* matProps) : Primitive(matProps), _p0(p0), _p1(p1) {}
 
 	Collision intersect(Ray ray) {
+		if (checkCache(ray.id)) return collisionCache.col;
 		Collision col;
 		col.object = nullptr;
 
@@ -327,6 +353,7 @@ public:
 		col.object = this;
 		col.point = addVector(ray.origin, vector3MultScalar(ray.versor, t));
 
+		cacheCollision(col, ray);
 		return col;
 	}
 };
