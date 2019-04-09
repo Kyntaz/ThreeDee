@@ -14,6 +14,7 @@ public:
 
 	Camera(Vector3 from, Vector3 at, Vector3 up, float angle, float hither, int resX, int resY, float focus, float rad) :
 		eye(from), at(at), up(up), angle(angle), nearC(hither), resX(resX), resY(resY), lens_radius(rad), focal_distance(focus) {
+		nearC = vector3Length(subVector(at, from));
 	}
 	int GetResX() {
 		return resX;
