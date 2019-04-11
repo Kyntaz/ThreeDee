@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ThreeDee.cpp" />
+    <ClCompile Include="tinyply\tinyply.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aabb.h" />
@@ -174,6 +175,7 @@
     <ClInclude Include="colors.h" />
     <ClInclude Include="primitives.h" />
     <ClInclude Include="ray.h" />
+    <ClInclude Include="tinyply\tinyply.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vector3.h" />
   </ItemGroup>

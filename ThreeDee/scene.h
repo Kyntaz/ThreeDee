@@ -15,6 +15,7 @@
 #include "positionallight.h"
 #include "materialproperties.h"
 #include "ray.h"
+#include "tinyply/tinyply.h"
 
 class Scene
 {
@@ -248,6 +249,17 @@ public:
 
 				primitives.push_back(poligon);
 			}
+			//PLY Model (Cool stuff, huh?)
+			else if (command == "ply") {
+				float scale = std::stof(tokens[2]);
+
+				Vector3 translate;
+				translate.x = std::stof(tokens[3]);
+				translate.y = std::stof(tokens[4]);
+				translate.z = std::stof(tokens[5]);
+
+				readPly(tokens[1].c_str(), matProperties, scale, translate);
+			}
 			//POLIGONAL PATCH
 			else if (command == "pp") {
 				// std::cout << "Creating Poligon Patch: " << std::endl;
@@ -344,6 +356,50 @@ public:
 		}
 		else {
 			return grid->traverse(ray);
+		}
+	}
+
+	void readPly(const char* filename, MaterialProperties* mat, float scale, Vector3 translate) {
+		using namespace tinyply;
+		try {
+			std::ifstream ss(filename, std::ios::binary);
+			PlyFile file;
+			file.parse_header(ss);
+
+			std::cout << "Reading Ply: " << filename << "\n";
+
+			std::shared_ptr<PlyData> vertices, faces;
+			vertices = file.request_properties_from_element("vertex", { "x", "y", "z" });
+			faces = file.request_properties_from_element("face", { "vertex_indices" }, 3);
+
+			file.read(ss);
+
+			// Casting.
+			std::vector<Vector3> my_vertices(vertices->count);
+			const size_t verticesBytes = vertices->buffer.size_bytes();
+			std::memcpy(my_vertices.data(), vertices->buffer.get(), verticesBytes);
+
+			std::vector<Idx3> my_faces(faces->count);
+			const size_t facesBytes = faces->buffer.size_bytes();
+			std::memcpy(my_faces.data(), faces->buffer.get(), facesBytes);
+
+			// Add the triangles to the scene.
+			for (Idx3 face : my_faces) {
+				std::vector<Vector3> vvv = std::vector<Vector3>();
+				vvv.push_back(addVector(vector3MultScalar(my_vertices.at(face.i1), scale), translate));
+				vvv.push_back(addVector(vector3MultScalar(my_vertices.at(face.i2), scale), translate));
+				vvv.push_back(addVector(vector3MultScalar(my_vertices.at(face.i3), scale), translate));
+
+				/*std::cout << "Adding Face: " << face.i1 << " " << face.i2 << " " << face.i3 << "\n";
+				printVector(my_vertices.at(face.i1));
+				printVector(my_vertices.at(face.i2));
+				printVector(my_vertices.at(face.i3));*/
+
+				primitives.push_back(new Poligon(vvv, mat));
+			}
+		}
+		catch (const std::exception &e) {
+			std::cout << "Error in Ply\n";
 		}
 	}
 
