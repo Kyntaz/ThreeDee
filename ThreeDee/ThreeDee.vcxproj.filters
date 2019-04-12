@@ -56,5 +56,13 @@
     <ClInclude Include="tinyply\tinyply.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="configutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config\rayTracer.conf">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
