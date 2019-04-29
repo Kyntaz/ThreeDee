@@ -13,6 +13,7 @@ int DEPTH_TRACE_LIMIT = 4;
 bool ANTI_ALIASING = true;
 int SAMPLING_RATE = 8; //16
 bool GRID_OPTIMIZATION = true;
+float M = 2;
 std::string NFF_FILE = "nffs/bunny.nff";
 
 std::vector<std::string> getTokensFromLine(std::ifstream& ifStream) {
@@ -50,6 +51,9 @@ void loadConfig() {
 
 	tokens = getTokensFromLine(file);
 	EPSILON = std::stof(tokens[0]);
+
+	tokens = getTokensFromLine(file);
+	M = std::stof(tokens[0]);
 
 	tokens = getTokensFromLine(file);
 	NFF_FILE = tokens[0];

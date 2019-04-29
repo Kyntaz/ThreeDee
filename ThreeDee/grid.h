@@ -6,8 +6,6 @@
 #include <limits>
 #include <math.h>
 
-#define M 2
-
 
 
 struct _traverseInfo {
@@ -117,7 +115,7 @@ TraverseInfo RayAABBIntersection(AABB aabb, Ray ray) {
 
 class Grid{
 	AABB gridAABB;
-	int m = M;
+	float m = M;
 	int Nx, Ny, Nz;
 
 	std::vector<std::vector<Primitive*>> cells;

@@ -390,11 +390,6 @@ public:
 				vvv.push_back(addVector(vector3MultScalar(my_vertices.at(face.i2), scale), translate));
 				vvv.push_back(addVector(vector3MultScalar(my_vertices.at(face.i3), scale), translate));
 
-				/*std::cout << "Adding Face: " << face.i1 << " " << face.i2 << " " << face.i3 << "\n";
-				printVector(my_vertices.at(face.i1));
-				printVector(my_vertices.at(face.i2));
-				printVector(my_vertices.at(face.i3));*/
-
 				primitives.push_back(new Poligon(vvv, mat));
 			}
 		}
